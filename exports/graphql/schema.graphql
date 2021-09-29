@@ -41,6 +41,133 @@ type UserPermissionsPasswordPayload {
   ok: Boolean!
 }
 
+type Blog {
+  id: ID!
+  created_at: DateTime!
+  updated_at: DateTime!
+  title: String
+  description: String
+  author: String
+  image: UploadFile
+  date: Date
+  published_at: DateTime
+}
+
+type BlogConnection {
+  values: [Blog]
+  groupBy: BlogGroupBy
+  aggregate: BlogAggregator
+}
+
+type BlogAggregator {
+  count: Int
+  totalCount: Int
+}
+
+type BlogGroupBy {
+  id: [BlogConnectionId]
+  created_at: [BlogConnectionCreated_at]
+  updated_at: [BlogConnectionUpdated_at]
+  title: [BlogConnectionTitle]
+  description: [BlogConnectionDescription]
+  author: [BlogConnectionAuthor]
+  image: [BlogConnectionImage]
+  date: [BlogConnectionDate]
+  published_at: [BlogConnectionPublished_at]
+}
+
+type BlogConnectionId {
+  key: ID
+  connection: BlogConnection
+}
+
+type BlogConnectionCreated_at {
+  key: DateTime
+  connection: BlogConnection
+}
+
+type BlogConnectionUpdated_at {
+  key: DateTime
+  connection: BlogConnection
+}
+
+type BlogConnectionTitle {
+  key: String
+  connection: BlogConnection
+}
+
+type BlogConnectionDescription {
+  key: String
+  connection: BlogConnection
+}
+
+type BlogConnectionAuthor {
+  key: String
+  connection: BlogConnection
+}
+
+type BlogConnectionImage {
+  key: ID
+  connection: BlogConnection
+}
+
+type BlogConnectionDate {
+  key: ID
+  connection: BlogConnection
+}
+
+type BlogConnectionPublished_at {
+  key: DateTime
+  connection: BlogConnection
+}
+
+input BlogInput {
+  title: String
+  description: String
+  author: String
+  image: ID
+  date: Date
+  published_at: DateTime
+  created_by: ID
+  updated_by: ID
+}
+
+input editBlogInput {
+  title: String
+  description: String
+  author: String
+  image: ID
+  date: Date
+  published_at: DateTime
+  created_by: ID
+  updated_by: ID
+}
+
+input createBlogInput {
+  data: BlogInput
+}
+
+type createBlogPayload {
+  blog: Blog
+}
+
+input updateBlogInput {
+  where: InputID
+  data: editBlogInput
+}
+
+type updateBlogPayload {
+  blog: Blog
+}
+
+input deleteBlogInput {
+  where: InputID
+}
+
+type deleteBlogPayload {
+  blog: Blog
+}
+
 type I18NLocale {
   id: ID!
   created_at: DateTime!
@@ -511,7 +638,7 @@ type deleteUserPayload {
   user: UsersPermissionsUser
 }
 
-union Morph = UsersPermissionsMe | UsersPermissionsMeRole | UsersPermissionsLoginPayload | UserPermissionsPasswordPayload | I18NLocale | UploadFile | UploadFileConnection | UploadFileAggregator | UploadFileAggregatorSum | UploadFileAggregatorAvg | UploadFileAggregatorMin | UploadFileAggregatorMax | UploadFileGroupBy | UploadFileConnectionId | UploadFileConnectionCreated_at | UploadFileConnectionUpdated_at | UploadFileConnectionName | UploadFileConnectionAlternativeText | UploadFileConnectionCaption | UploadFileConnectionWidth | UploadFileConnectionHeight | UploadFileConnectionFormats | UploadFileConnectionHash | UploadFileConnectionExt | UploadFileConnectionMime | UploadFileConnectionSize | UploadFileConnectionUrl | UploadFileConnectionPreviewUrl | UploadFileConnectionProvider | UploadFileConnectionProvider_metadata | deleteFilePayload | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsRoleConnection | UsersPermissionsRoleAggregator | UsersPermissionsRoleGroupBy | UsersPermissionsRoleConnectionId | UsersPermissionsRoleConnectionName | UsersPermissionsRoleConnectionDescription | UsersPermissionsRoleConnectionType | createRolePayload | updateRolePayload | deleteRolePayload | UsersPermissionsUser | UsersPermissionsUserConnection | UsersPermissionsUserAggregator | UsersPermissionsUserGroupBy | UsersPermissionsUserConnectionId | UsersPermissionsUserConnectionCreated_at | UsersPermissionsUserConnectionUpdated_at | UsersPermissionsUserConnectionUsername | UsersPermissionsUserConnectionEmail | UsersPermissionsUserConnectionProvider | UsersPermissionsUserConnectionConfirmed | UsersPermissionsUserConnectionBlocked | UsersPermissionsUserConnectionRole | createUserPayload | updateUserPayload | deleteUserPayload
+union Morph = UsersPermissionsMe | UsersPermissionsMeRole | UsersPermissionsLoginPayload | UserPermissionsPasswordPayload | Blog | BlogConnection | BlogAggregator | BlogGroupBy | BlogConnectionId | BlogConnectionCreated_at | BlogConnectionUpdated_at | BlogConnectionTitle | BlogConnectionDescription | BlogConnectionAuthor | BlogConnectionImage | BlogConnectionDate | BlogConnectionPublished_at | createBlogPayload | updateBlogPayload | deleteBlogPayload | I18NLocale | UploadFile | UploadFileConnection | UploadFileAggregator | UploadFileAggregatorSum | UploadFileAggregatorAvg | UploadFileAggregatorMin | UploadFileAggregatorMax | UploadFileGroupBy | UploadFileConnectionId | UploadFileConnectionCreated_at | UploadFileConnectionUpdated_at | UploadFileConnectionName | UploadFileConnectionAlternativeText | UploadFileConnectionCaption | UploadFileConnectionWidth | UploadFileConnectionHeight | UploadFileConnectionFormats | UploadFileConnectionHash | UploadFileConnectionExt | UploadFileConnectionMime | UploadFileConnectionSize | UploadFileConnectionUrl | UploadFileConnectionPreviewUrl | UploadFileConnectionProvider | UploadFileConnectionProvider_metadata | deleteFilePayload | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsRoleConnection | UsersPermissionsRoleAggregator | UsersPermissionsRoleGroupBy | UsersPermissionsRoleConnectionId | UsersPermissionsRoleConnectionName | UsersPermissionsRoleConnectionDescription | UsersPermissionsRoleConnectionType | createRolePayload | updateRolePayload | deleteRolePayload | UsersPermissionsUser | UsersPermissionsUserConnection | UsersPermissionsUserAggregator | UsersPermissionsUserGroupBy | UsersPermissionsUserConnectionId | UsersPermissionsUserConnectionCreated_at | UsersPermissionsUserConnectionUpdated_at | UsersPermissionsUserConnectionUsername | UsersPermissionsUserConnectionEmail | UsersPermissionsUserConnectionProvider | UsersPermissionsUserConnectionConfirmed | UsersPermissionsUserConnectionBlocked | UsersPermissionsUserConnectionRole | createUserPayload | updateUserPayload | deleteUserPayload
 
 input InputID {
   id: ID!
@@ -530,6 +657,9 @@ type AdminUser {
 }
 
 type Query {
+  blog(id: ID!, publicationState: PublicationState): Blog
+  blogs(sort: String, limit: Int, start: Int, where: JSON, publicationState: PublicationState): [Blog]
+  blogsConnection(sort: String, limit: Int, start: Int, where: JSON): BlogConnection
   files(sort: String, limit: Int, start: Int, where: JSON, publicationState: PublicationState): [UploadFile]
   filesConnection(sort: String, limit: Int, start: Int, where: JSON): UploadFileConnection
   role(id: ID!, publicationState: PublicationState): UsersPermissionsRole
@@ -546,6 +676,10 @@ type Query {
 }
 
 type Mutation {
+  createBlog(input: createBlogInput): createBlogPayload
+  updateBlog(input: updateBlogInput): updateBlogPayload
+  deleteBlog(input: deleteBlogInput): deleteBlogPayload
+
   """Delete one file"""
   deleteFile(input: deleteFileInput): deleteFilePayload
 
