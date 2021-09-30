@@ -108,3 +108,5 @@ license.txt
 *.cache
 build
 .strapi-updater.json
+.env
+package.json
